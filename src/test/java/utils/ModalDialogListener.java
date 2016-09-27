@@ -25,9 +25,4 @@ public class ModalDialogListener extends AbstractWebDriverEventListener {
                     }
                 });
     }
-
-    private void refreshToCloseModals(WebDriver driver) {
-        driver.navigate().refresh();
-    }
-
 }
