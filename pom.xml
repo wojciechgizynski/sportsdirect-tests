@@ -34,15 +34,6 @@
                     <target>${target.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.plugin.version}</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <webdriver.chrome.driver>${project.basedir}/driver/chromedriver.exe</webdriver.chrome.driver>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

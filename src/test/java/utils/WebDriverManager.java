@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
@@ -8,17 +10,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
-import static utils.OsUtils.killProcess;
-
 public class WebDriverManager {
 
     private static WebDriver wd = null;
     private static Logger log = LoggerFactory.getLogger(WebDriverManager.class);
 
     private static WebDriver getWebDriver() {
-        killProcess("chromedriver.exe");
         DesiredCapabilities chromeCaps = DesiredCapabilities.chrome();
         chromeCaps.setCapability(CapabilityType.ELEMENT_SCROLL_BEHAVIOR, ElementScrollBehavior.BOTTOM);
         return new ChromeDriver(chromeCaps);
