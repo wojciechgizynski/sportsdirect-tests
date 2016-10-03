@@ -20,39 +20,33 @@ public class CalculationTest extends BaseTest {
     @Before
     public void beforeTest() {
         getPage(beltsOverviewPage.getUrl());
-        log.debug("Refreshing page to close country selection modal dialog");
-        wd.navigate().refresh();
-        beltsOverviewPage.closeNewsLetterModal();
-        log.debug("Refreshing page to close ad modal dialog");
-        wd.navigate().refresh();
     }
 
     @Test
-    public void testWhetherTheCalculationIsCorrect() throws ParseException {
+    public void testWhetherTheCalculationIsCorrect() {
         try {
-        List<String> productDescriptions = new ArrayList<>();
+            List<String> productDescriptions = new ArrayList<>();
+            BeltsPage beltsPage = beltsOverviewPage.selectProduct();
+            BigDecimal beltsPrice = parsePrice(beltsPage.selectSize()
+                    .clickOnAddToBag()
+                    .getProductPrice());
+            productDescriptions.add(beltsPage.getProductName());
 
-        BeltsPage beltsPage = beltsOverviewPage.selectProduct();
-        BigDecimal beltsPrice = parsePrice(beltsPage.selectSize()
-                .clickOnAddToBag()
-                .getProductPrice());
-        productDescriptions.add(beltsPage.getProductName());
+            getPage(trainersOverviewPage.getUrl());
+            TrainersPage trainersPage = trainersOverviewPage.selectProduct();
+            BigDecimal twoTrainersPrice = parsePrice(trainersPage.selectSize()
+                    .clickOnAddToBag()
+                    .getProductPrice()).multiply(new BigDecimal(2));
+            productDescriptions.add(trainersPage.getProductName());
 
-        getPage(trainersOverviewPage.getUrl());
-        TrainersPage trainersPage = trainersOverviewPage.selectProduct();
-        BigDecimal twoTrainersPrice = parsePrice(trainersPage.selectSize()
-                .clickOnAddToBag()
-                .getProductPrice()).multiply(new BigDecimal(2));
-        productDescriptions.add(trainersPage.getProductName());
+            BagPage bagPage = beltsPage.goToBag();
+            bagPage.removeExtraProducts(productDescriptions)
+                    .addProduct(productDescriptions.get(1))
+                    .clickUpdateBagSign();
 
-        BagPage bagPage = beltsPage.goToBag();
-        bagPage.removeExtraProducts(productDescriptions)
-                .addProduct(productDescriptions.get(1))
-                .clickUpdateBagSign();
-
-        BigDecimal expectedTotalPrice = beltsPrice.add(twoTrainersPrice);
-        BigDecimal actualTotalPrice = parsePrice(bagPage.getTotalPrice());
-        assertEquals(expectedTotalPrice, actualTotalPrice);
+            BigDecimal expectedTotalPrice = beltsPrice.add(twoTrainersPrice);
+            BigDecimal actualTotalPrice = parsePrice(bagPage.getTotalPrice());
+            assertEquals(expectedTotalPrice, actualTotalPrice);
         } catch (ParseException e) {
             e.printStackTrace();
         }

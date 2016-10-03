@@ -5,7 +5,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +14,7 @@ import static utils.OsUtils.killProcess;
 
 public class WebDriverManager {
 
+    private static WebDriver wd = null;
     private static Logger log = LoggerFactory.getLogger(WebDriverManager.class);
 
     private static WebDriver getWebDriver() {
@@ -26,15 +26,15 @@ public class WebDriverManager {
 
     public static WebDriver getDriver() {
         log.info("Going to start Chrome browser");
-        EventFiringWebDriver wd = new EventFiringWebDriver(getWebDriver());
-        wd.register(new ModalDialogListener());
+        if (wd == null) {
+            wd = getWebDriver();
 
-        WebDriver.Timeouts timeouts = wd.manage().timeouts();
-
-        timeouts.pageLoadTimeout(30, TimeUnit.SECONDS);
-        timeouts.setScriptTimeout(30, TimeUnit.SECONDS);
-        timeouts.implicitlyWait(10, TimeUnit.SECONDS);
-        wd.manage().window().maximize();
+            WebDriver.Timeouts timeouts = wd.manage().timeouts();
+            timeouts.pageLoadTimeout(30, TimeUnit.SECONDS);
+            timeouts.setScriptTimeout(30, TimeUnit.SECONDS);
+            timeouts.implicitlyWait(10, TimeUnit.SECONDS);
+            wd.manage().window().maximize();
+        }
         return wd;
     }
 }
